@@ -310,6 +310,7 @@
     <form class="enq-form reveal" id="enqForm" onsubmit="return submitEnquiry(event)" novalidate>
       <h3>Send a private enquiry</h3>
       <div class="form-sub">All correspondence is confidential.</div>
+      <input type="checkbox" name="botcheck" id="" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="form-row">
         <label><span class="lbl">Name</span><input type="text" name="name" id="f_name" required autocomplete="name"></label>
         <label><span class="lbl">Email</span><input type="email" name="email" id="f_email" required autocomplete="email"></label>
@@ -392,7 +393,7 @@ function closeLegal(){
   document.body.classList.remove('locked');
 }
 
-/* ===== ENQUIRY FORM ===== */
+/* ===== ENQUIRY FORM (Web3Forms) ===== */
 function submitEnquiry(e){
   e.preventDefault();
   var f = e.target;
@@ -409,16 +410,51 @@ function submitEnquiry(e){
     status.textContent = 'Please complete name, email and brief.';
     return false;
   }
-  var body = 'Name: ' + data.name + '\n' +
-             'Email: ' + data.email + '\n' +
-             'Phone: ' + (data.phone || '—') + '\n' +
-             'Category: ' + data.category + '\n\n' +
-             'Brief:\n' + data.brief;
-  var subject = 'Enquiry from ' + data.name + ' (' + data.category + ')';
-  window.location.href = 'mailto:info@watchmansglobal.com?subject=' +
-    encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+  var btn = f.querySelector('button[type=submit]');
+  var btnLabel = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
   status.className = 'form-status ok';
-  status.textContent = 'Opening your email app. If nothing opens, email us directly at info@watchmansglobal.com.';
+  status.textContent = 'Sending your enquiry…';
+
+  var payload = {
+    access_key: '4abf5952-52c3-49fa-8d65-b5b287e72699',
+    subject: 'Enquiry from ' + data.name + ' (' + data.category + ')',
+    from_name: 'Watchmans Global Website',
+    replyto: data.email,
+    botcheck: f.botcheck && f.botcheck.checked ? true : false,
+    Name: data.name,
+    Email: data.email,
+    Phone: data.phone || '—',
+    Category: data.category,
+    Brief: data.brief
+  };
+
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    if (res.success) {
+      status.className = 'form-status ok';
+      status.textContent = 'Thank you, ' + data.name.split(' ')[0] +
+        '. Your enquiry has reached us — we will reply by email within one working day, usually sooner.';
+      f.reset();
+    } else {
+      status.className = 'form-status err';
+      status.textContent = 'Something went wrong sending your enquiry. Please email us directly at info@watchmansglobal.com.';
+    }
+  })
+  .catch(function(){
+    status.className = 'form-status err';
+    status.textContent = 'Network problem sending your enquiry. Please email us directly at info@watchmansglobal.com.';
+  })
+  .finally(function(){
+    if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+  });
+
   return false;
 }
 
