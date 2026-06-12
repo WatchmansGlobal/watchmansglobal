@@ -308,8 +308,14 @@
     transition:transform .4s ease;
     z-index:200 !important;
     margin:0 !important;
+    pointer-events:none !important;
+    visibility:hidden !important;
   }
-  .navlinks.open{ transform:translateY(0) !important; }
+  .navlinks.open{
+    transform:translateY(0) !important;
+    pointer-events:auto !important;
+    visibility:visible !important;
+  }
   .navlinks a{
     font-size:20px !important;
     color:#1A1714 !important;
