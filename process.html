@@ -247,10 +247,14 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Acquiring a watch through Watchmans Global","description":"Our six-stage process for sourcing, authenticating and delivering an exceptional timepiece \u2014 from first conversation to final handover.","step":[{"@type":"HowToStep","position":1,"name":"The Private Briefing","text":"A confidential conversation to establish what you are looking for \u2014 reference, year, dial, condition, budget."},{"@type":"HowToStep","position":2,"name":"The Mandate & The Search","text":"We agree the scope and engage our private network of dealers, collectors and auction-house contacts."},{"@type":"HowToStep","position":3,"name":"Vetting & Negotiation","text":"Each candidate is shortlisted, photographed, and quietly negotiated on your behalf \u2014 without disclosing you."},{"@type":"HowToStep","position":4,"name":"Independent Verification","text":"Authentication is established before completion; movement, case, dial and documentation independently verified."},{"@type":"HowToStep","position":5,"name":"Escrow & Settlement","text":"Payment routed through escrow where appropriate; documentation prepared to your specification."},{"@type":"HowToStep","position":6,"name":"Delivery & Handover","text":"Fully insured, white-glove delivery worldwide \u2014 to your door, your office, or any address you prefer."}]}</script>
 <style id="mobile-menu-fix">
 @media(max-width:760px){
+  /* Ensure nav doesn't create a containing block for the menu */
+  nav, header, header > nav { transform: none !important; filter: none !important; }
   .navlinks{
     position:fixed !important;
     top:0 !important; left:0 !important; right:0 !important; bottom:0 !important;
-    width:100% !important; height:100% !important;
+    width:100vw !important; height:100vh !important;
+    min-width:100vw !important; min-height:100vh !important;
+    max-width:100vw !important; max-height:100vh !important;
     background:#F4F0E8 !important;
     display:flex !important;
     flex-direction:column !important;
@@ -260,7 +264,7 @@
     padding:40px !important;
     transform:translateY(-100%);
     transition:transform .4s ease;
-    z-index:200 !important;
+    z-index:150 !important;
     margin:0 !important;
     pointer-events:none !important;
     visibility:hidden !important;
@@ -279,6 +283,8 @@
     letter-spacing:.2em !important;
     text-transform:uppercase !important;
   }
+  /* Burger stays on top of the menu so X is always tappable */
+  .burger{ z-index:300 !important; position:relative !important; }
 }
 </style>
 </head>
